@@ -5,13 +5,22 @@
 #include <M5Unified.h>
 #include <WiFi.h>
 #include <WebVoiceVoxClient.h>
+#include <ChatClient.h>
 
 #include "AudioOutputM5Speaker.h"
+#include "MessageQueue.h"
 
-static const char* VOICEVOX_APIKEY = "*** YOUR API KEY ***";
+constexpr const char* OPENAI_APIKEY = "*** YOUR API KEY ***";
+constexpr const char* VOICEVOX_APIKEY = "*** YOUR API KEY ***";
 
 AudioOutputM5Speaker audioOutput(&M5.Speaker, 0);
 WebVoiceVoxClient voiceVox(audioOutput, VOICEVOX_APIKEY);
+MessageQueue messageQueue(voiceVox);
+ChatClient chatClient(OPENAI_APIKEY);
+
+void chatCallback(const char* chunk) {
+  messageQueue.add(chunk);
+}
 
 void setup() {
   M5.begin();
@@ -31,6 +40,8 @@ void setup() {
   Serial.println("Connected to WiFi");
 
   voiceVox.begin();
+  chatClient.begin();
+  messageQueue.begin();
 }
 
 void loop() {
@@ -41,8 +52,8 @@ void loop() {
   while (M5.Display.getTouch(&t)) {
     ::delay(1);
   }
-  voiceVox.Queue("こんにちは。お元気ですか？私は元気です");
-  voiceVox.Queue("ところで今日は何曜日ですか？知ってます？");
-  voiceVox.Queue("あ、時間だ。それではさようなら");
-  voiceVox.Queue("またいつかお会いしましょうね！");
+  if (!chatClient.ChatStream("こんにちは、何かお話ししてください", chatCallback)) {
+    return;
+  }
+  messageQueue.flush();
 }
