@@ -71,6 +71,14 @@ Serial.printf("Synthesis) queue: %s\r\n", message.c_str());
   _queue.push(message);
 }
 
+int SynthesisTask::Speaker() const {
+  return _speaker;
+}
+
+void SynthesisTask::Speaker(int speaker) {
+  _speaker = speaker;
+}
+
 void SynthesisTask::loop() {
   if (_queue.size() <= 0) {
     return;
@@ -80,7 +88,11 @@ void SynthesisTask::loop() {
   }
   String message = _queue.front();
 Serial.printf("---- Synthesis) process: %s\r\n", message.c_str());
-  String api = String("https://api.tts.quest/v3/voicevox/synthesis?key=")+ _apiKey +  String("&text=") +  URLEncode(message.c_str()) + "&speaker=3";
+  String api = String("https://api.tts.quest/v3/voicevox/synthesis?key=") + _apiKey;
+  api += String("&text=") +  URLEncode(message.c_str());
+  if (_speaker >= 0) {
+    api += String("&speaker=") + String(_speaker);
+  }
   auto url = new String();
   if (!GetStreamingUrl(api, *url, _rootCACertificate)) {
 Serial.printf("---- Synthesis) error!\r\n");

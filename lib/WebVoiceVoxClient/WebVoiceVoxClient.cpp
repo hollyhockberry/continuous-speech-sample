@@ -59,3 +59,13 @@ void WebVoiceVoxClient::Queue(String message) {
     _synthesis->Queue(message);
   }
 }
+
+int WebVoiceVoxClient::Speaker() const {
+  return _synthesis ? _synthesis->Speaker() : -1;
+}
+
+void WebVoiceVoxClient::Speaker(int speaker) {
+  if (_synthesis) {
+    _synthesis->Speaker(speaker);
+  }
+}

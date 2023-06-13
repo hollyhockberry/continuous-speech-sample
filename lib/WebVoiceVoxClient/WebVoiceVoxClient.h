@@ -20,6 +20,10 @@ class WebVoiceVoxClient {
   WebVoiceVoxClient(AudioOutput& output, const char* apiKey, const char* rootCACertificate = nullptr);
 
   void begin();
+
+  int Speaker() const;
+  void Speaker(int speaker);
+
   void Queue(String message);
 
  private:
