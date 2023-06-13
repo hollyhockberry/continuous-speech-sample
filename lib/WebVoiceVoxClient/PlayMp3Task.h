@@ -12,9 +12,14 @@ class PlayMp3Task : public Task {
   QueueHandle_t _queue = nullptr;
   const char* _rootCACertificate;
   uint8_t* _buffer;
+  bool _busy = false;
 
  public:
   PlayMp3Task(AudioOutput& output, QueueHandle_t recvQueue, const char* rootCACertificate);
+
+  bool busy() const {
+    return _busy;
+  }
 
  protected:
   void loop() override;

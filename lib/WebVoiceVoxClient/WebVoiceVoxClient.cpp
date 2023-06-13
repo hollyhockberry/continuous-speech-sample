@@ -69,3 +69,7 @@ void WebVoiceVoxClient::Speaker(int speaker) {
     _synthesis->Speaker(speaker);
   }
 }
+
+bool WebVoiceVoxClient::busy() const {
+  return (_playMp3 ? _playMp3->busy() : false) || (_synthesis ? _synthesis->busy() : false);
+}

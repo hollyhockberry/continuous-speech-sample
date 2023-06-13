@@ -21,6 +21,8 @@ class WebVoiceVoxClient {
 
   void begin();
 
+  bool busy() const;
+
   int Speaker() const;
   void Speaker(int speaker);
 

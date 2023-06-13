@@ -86,6 +86,7 @@ void SynthesisTask::loop() {
   if (::uxQueueSpacesAvailable(_sendQueue) <= 0) {
     return;
   }
+  _busy = true;
   String message = _queue.front();
 Serial.printf("---- Synthesis) process: %s\r\n", message.c_str());
   String api = String("https://api.tts.quest/v3/voicevox/synthesis?key=") + _apiKey;
@@ -101,9 +102,11 @@ Serial.printf("---- Synthesis) error!\r\n");
     std::swap(_queue, empty);
     _queue.empty();
     delete url;
+    _busy = false;
     return;
   }
 Serial.printf("---- Synthesis) finish\r\n");
   ::xQueueSend(_sendQueue, &url, 0);
   _queue.pop();
+  _busy = false;
 }

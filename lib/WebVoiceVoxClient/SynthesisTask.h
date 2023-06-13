@@ -12,12 +12,17 @@ class SynthesisTask : public Task {
   QueueHandle_t _sendQueue = nullptr;
   std::queue<String> _queue;
   int _speaker = 3;
+  bool _busy = false;
 
  public:
   SynthesisTask(const char* apiKey, QueueHandle_t sendQueue, const char* rootCACertificate);
 
   int Speaker() const;
   void Speaker(int speaker);
+
+  bool busy() const {
+    return _busy;
+  }
 
   void Queue(String& message);
 

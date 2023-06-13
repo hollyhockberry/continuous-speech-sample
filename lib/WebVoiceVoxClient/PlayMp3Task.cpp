@@ -21,6 +21,7 @@ void PlayMp3Task::loop() {
   const auto ret = ::xQueueReceive(_queue, &url, portMAX_DELAY);
 Serial.printf("======== PlayMp3Task) begin: %d\r\n", ret);
 
+  _busy = true;
   auto audioFile = new AudioFileSourceHTTPSStream(url->c_str(), _rootCACertificate);
   auto audiobuffer = new AudioFileSourceBuffer(audioFile, _buffer, bufferSize);
   _mp3.begin(audiobuffer, &_output);
@@ -37,5 +38,6 @@ Serial.printf("======== PlayMp3Task) begin: %d\r\n", ret);
   delete audiobuffer;
   delete audioFile;
   delete url;
+  _busy= false;
 Serial.printf("======== PlayMp3Task) finish\r\n");
 }
